@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const { get } = require('express/lib/response');
 const app = express();
 const port = process.env.PORT || 5000;
@@ -16,12 +16,30 @@ async function run(){
     try{
         await client.connect();
         console.log('database connected');
-        const productsCollection = client.db('menufacturer_website').collection('products');
-        app.get('/products', async(req, res)=>{
+        const productCollection = client.db('menufacturer_website').collection('product');
+        const userCollection = client.db('menufacturer_website').collection('user');
+        app.get('/product', async(req, res)=>{
             const query ={};
-            const cursor = productsCollection.find(query);
-            const product = await cursor.toArray();
-            res.send(product)
+            const cursor = productCollection.find(query);
+            const products = await cursor.toArray();
+            res.send(products)
+        });
+        app.get('/product/:id', async(req, res)=>{
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const products = await productCollection.findOne(query);
+            res.send(products)
+        });
+        app.get('/user/:email', async(req, res) =>{
+            const email = req.params.email;
+            const user = req.body;
+            const filter = {email: email};
+            const options = { upsert:true};
+            const updatedDoc = {
+                $set: user,
+            };
+            const result = await userCollection.updateOne(filter, updatedDoc, options);
+            res.send(result)
         })
     }
     finally{
