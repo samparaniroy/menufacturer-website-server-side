@@ -30,17 +30,24 @@ async function run(){
             const products = await productCollection.findOne(query);
             res.send(products)
         });
-        app.get('/user/:email', async(req, res) =>{
+
+        // app.post('/users',async(req,res) =>{
+        //     const users = req.body;
+        //     const result = await userCollection.insertOne(users);
+        //     console.log('hitting the post',req.body);
+        //     res.json(result)
+        //   })
+          
+        app.get('/user/:email',async(req,res) =>{
             const email = req.params.email;
-            const user = req.body;
-            const filter = {email: email};
-            const options = { upsert:true};
-            const updatedDoc = {
-                $set: user,
-            };
-            const result = await userCollection.updateOne(filter, updatedDoc, options);
-            res.send(result)
-        })
+            const query = {email:email};
+            const user = await userCollection.findOne(query);
+            let isAdmin = false;
+            if(user?.role === 'admin'){
+              isAdmin = true;
+            }
+            res.json({admin: isAdmin})
+          })
     }
     finally{
 
