@@ -31,12 +31,12 @@ async function run(){
             res.send(products)
         });
 
-        // app.post('/users',async(req,res) =>{
-        //     const users = req.body;
-        //     const result = await userCollection.insertOne(users);
-        //     console.log('hitting the post',req.body);
-        //     res.json(result)
-        //   })
+        app.post('/users',async(req,res) =>{
+            const users = req.body;
+            const result = await userCollection.insertOne(users);
+            console.log('hitting the post',req.body);
+            res.json(result)
+          })
           
         app.get('/user/:email',async(req,res) =>{
             const email = req.params.email;
