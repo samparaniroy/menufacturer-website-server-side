@@ -18,12 +18,18 @@ async function run(){
         console.log('database connected');
         const productCollection = client.db('menufacturer_website').collection('product');
         const userCollection = client.db('menufacturer_website').collection('user');
+        const reviewCollection = client.db('menufacturer_website').collection('review');
         app.get('/product', async(req, res)=>{
             const query ={};
             const cursor = productCollection.find(query);
             const products = await cursor.toArray();
             res.send(products)
         });
+        app.post('/reviews',async(req,res) =>{
+            const newReview = req.body;
+            const reviews = reviewCollection.insertOne(newReview);
+            res.send(reviews)
+        })
         app.get('/product/:id', async(req, res)=>{
             const id = req.params.id;
             const query = {_id: ObjectId(id)};
@@ -35,12 +41,18 @@ async function run(){
             const result = await productCollection.insertOne(newProduct);
             res.send(result)
         })
+        app.delete('/product/:id', async(req, res) =>{
+            const id = req.params.id;
+            const query ={_id: ObjectId(id)};
+            const result = await productCollection.deleteOne(query);
+            res.send(result)
+        })
 
         app.post('/users',async(req,res) =>{
             const users = req.body;
             const result = await userCollection.insertOne(users);
             console.log('hitting the post',req.body);
-            res.json(result)
+            res.send(result)
           })
           
         app.get('/user/:email',async(req,res) =>{
@@ -51,7 +63,7 @@ async function run(){
             if(user?.role === 'admin'){
               isAdmin = true;
             }
-            res.json({admin: isAdmin})
+            res.send({admin: isAdmin})
           })
     }
     finally{
