@@ -71,7 +71,14 @@ async function run(){
               isAdmin = true;
             }
             res.send({admin: isAdmin})
-          })
+        })
+        app.get('/orders', async(req, res)=>{
+            const email = req.query.email;
+            const query = {email:email};
+            const cursor = orderCollection.find(query);
+            const order = await cursor.toArray();
+            res.send((order))
+        })
         app.post('/order', async(req, res) =>{
             const order = req.body;
             const result = await orderCollection.insertOne(order);
