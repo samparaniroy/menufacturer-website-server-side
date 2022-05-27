@@ -19,11 +19,18 @@ async function run(){
         const productCollection = client.db('menufacturer_website').collection('product');
         const userCollection = client.db('menufacturer_website').collection('user');
         const reviewCollection = client.db('menufacturer_website').collection('review');
+        const orderCollection = client.db('menufacturer_website').collection('order');
         app.get('/product', async(req, res)=>{
             const query ={};
             const cursor = productCollection.find(query);
             const products = await cursor.toArray();
             res.send(products)
+        });
+        app.get('/reviews', async(req, res)=>{
+            const query ={};
+            const cursor = reviewCollection.find(query);
+            const review = await cursor.toArray();
+            res.send(review)
         });
         app.post('/reviews',async(req,res) =>{
             const newReview = req.body;
