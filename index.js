@@ -72,6 +72,13 @@ async function run(){
             }
             res.send({admin: isAdmin})
         })
+        app.delete('/orders/:id',async(req,res) =>{
+            const id=req.params.id;
+            const query = {_id:ObjectId(id)};
+            const result = await orderCollection.deleteOne(query);
+            console.log('delete the id',result);
+            res.json(result)
+          })
         app.get('/orders', async(req, res)=>{
             const email = req.query.email;
             const query = {email:email};
